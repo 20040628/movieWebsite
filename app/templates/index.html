@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon/favicon-32x32.png">
+    <!--Bootstrap css-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!--Font Awesome css-->
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <!--Magnific css-->
+    <link rel="stylesheet" href="../static/css/magnific-popup.css">
+    <!--Owl-Carousel css-->
+    <link rel="stylesheet" href="../static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../static/css/owl.theme.default.min.css">
+    <!--Animate css-->
+    <link rel="stylesheet" href="../static/css/animate.min.css">
+    <!--Slicknav css-->
+    <link rel="stylesheet" href="../static/css/slicknav.min.css">
+    <!--Site Main Style css-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!--Responsive css-->
+    <link rel="stylesheet" href="../static/css/responsive.css">
+</head>
+<body>
+<!-- Header Area Start -->
+<header class="filmoja-header-area">
+    <div class="main-header-area">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-2">
+             <div class="site-logo">
+                <a href="/">
+                <img src="../static/img/logo.png" alt="filmoja" />
+                </a>
+             </div>
+             <!-- Responsive Menu Start -->
+             <div class="filmoja-responsive-menu"></div>
+             <!-- Responsive Menu End -->
+          </div>
+          <div class="col-lg-4">
+          </div>
+          <div class="col-lg-6">
+             <div class="mainmenu">
+                <nav>
+                   <ul id="responsive_navigation">
+                      <li class="active"><a href="/">home</a></li>
+                      <li>
+                         <a href="/allMovie">movies</a>
+                      </li>
+                      <li>
+                         <a href="/recommend">Recommend</a>
+                      </li>
+                       {% if session.get('logged_in') %}
+                             <li>
+                                 <a href="#">My</a>
+                                 <ul>
+                                     <li><a href="/account">Account</a></li>
+                                     <li><a href="/mycomment">Comment</a></li>
+                                     <li><a href="/myfavorite">Favorite</a></li>
+                                     <li> <a href="/logout">Log out</a></li>
+
+                                 </ul>
+                              </li>
+                        {% else %}
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                       {% endif %}
+                   </ul>
+                </nav>
+             </div>
+          </div>
+       </div>
+    </div>
+    </div>
+</header>
+<!-- Header Area End -->
+
+ <!-- 1 Carousel map -->
+<section class="filmoja-slider-area fix">
+ <div class="filmoja-slide owl-carousel">
+     {% for movie in top_movies %}
+     <div class="filmoja-main-slide slide-item" data-backdrop="{{ movie.backdrop_path }}">
+       <div class="filmoja-main-caption">
+          <div class="filmoja-caption-cell">
+             <div class="container">
+                <div class="row">
+                   <div class="col-md-12">
+                      <div class="slider-content-holder">
+                         <div class="slider-text">
+                             {% for genre in movie.genres %}
+                            <span>{{ genre.name }}{% if not loop.last %}, {% endif %}</span>
+                            {% endfor %}
+                            <h2>{{ movie.movie_title }}</h2>
+                            <p class="release-slider">release on: {{ movie.release_date }}</p>
+                         </div>
+                         <div class="slider-play">
+                            <a class="filmoja-btn" href="{{ url_for('detail', movie_id=movie.id) }}">
+                            <i class="fa fa-angle-double-right"></i> learn more
+                            </a>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+       </div>
+    </div>
+     {% endfor %}
+ </div>
+</section>
+<!-- 1 Carousel map -->
+
+<!-- 2 Movies Area Start -->
+<section class="filmoja-tv-movies-area section_50">
+ <div class="container">
+    <div class="row">
+       <div class="col-md-12">
+          <div class="filmoja-heading">
+             <h2>movie <span>list</span></h2>
+          </div>
+       </div>
+    </div>
+    <div class="row">
+       <div class="col-md-12">
+          <div>
+           {# all movie start #}
+            <div class="row">
+                {% for movie in movie_list %}
+                <div class="col-lg-3 col-sm-6">
+                    <div class="single-top-movie">
+                   <div class="top-movie-wrap">
+                      <div class="top-movie-img">
+                          <img src="https://image.tmdb.org/t/p/original{{ movie.poster_path }}" alt="movies" />
+                      </div>
+                      <div class="thumb-hover">
+                         <a class="play" href="{{ url_for('detail', movie_id=movie.id) }}" aria-label="learn more"><i class="fa fa-eye"></i></a>
+                      </div>
+                   </div>
+                   <div class="top-movie-details">
+                      <h4 class="text-ellipsis"><a href="{{ url_for('detail', movie_id=movie.id) }}">{{ movie.movie_title }}</a></h4>
+                      <div class="movie-details-thumbs">
+                         <ul>
+                             <li>
+                               <span><i class="fa fa-clock-o"></i>Runtime: {{ movie.runtime }} min</span>
+                            </li>
+                            <li>
+                               <span><i class="fa fa-star"></i>Score: {{ movie.average_rating }}</span>
+                            </li>
+                         </ul>
+                      </div>
+                   </div>
+                </div>
+                </div>
+                {% endfor %}
+            </div>
+            {# all movie end #}
+            <div class="view-all-movies">
+                <a class="filmoja-btn mt-4" href="{{ url_for('movies') }}">
+                    <i class="fa fa-angle-double-right"></i> view all movies
+                </a>
+            </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</section>
+<!-- Tv Movies Area End -->
+
+<!-- 3 Theater Area Start -->
+<section class="filmoja-theater-area section_70">
+ <div class="container">
+    <div class="row">
+       <div class="col-md-5">
+          <div class="theater-left">
+             <div class="theater-box">
+                <div class="theater-text">
+                   <h3>{{ latest_movie.movie_title }}</h3>
+                   <p>The latest movie in our website, waiting for your.</p>
+                   <a href="{{ url_for('detail', movie_id=latest_movie.id) }}" class="filmoja-btn">View Detail</a>
+                </div>
+             </div>
+          </div>
+       </div>
+       <div class="col-md-7">
+          <div class="theater-slider slider-for">
+             <div class="single-theater">
+                <img src="https://image.tmdb.org/t/p/original{{ latest_movie.backdrop_path }}" alt="movie poster" />
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</section>
+<!-- Theater Area End -->
+
+<!-- Footer Area Start -->
+<footer class="filmoja-footer-area">
+ <div class="footer-top-area section_70">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-6 col-sm-6">
+             <div class="single-footer-widget">
+                <a href="/"><img src="../static/img/footer_logo.png" alt="footer logo" /></a>
+                <p>No.999, Xi'an Road, Pidu District</p>
+                <p>Chengdu, Sichuan</p>
+                <div class="footer-contact">
+                   <p>mail us: 2079815208@qq.com</p>
+                   <p>call me: 15806120101</p>
+                </div>
+             </div>
+          </div>
+          <div class="col-lg-6 col-sm-6">
+             <div class="single-footer-widget">
+                <h3>site map</h3>
+                <ul>
+                   <li><a href="/"><i class="fa fa-angle-double-right"></i>Home</a></li>
+                   <li><a href="/allMovie"><i class="fa fa-angle-double-right"></i>Movies</a></li>
+                   <li><a href="/recommend"><i class="fa fa-angle-double-right"></i>Recommend</a></li>
+                   <li><a href="/account"><i class="fa fa-angle-double-right"></i>My Account</a></li>
+                    <li><a href="/mycomment"><i class="fa fa-angle-double-right"></i>My Comment</a></li>
+                    <li><a href="/myfavorite"><i class="fa fa-angle-double-right"></i>My Favorite</a></li>
+                </ul>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <div class="copyright-area">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-12">
+             <div class="copyright-box">
+                <p>© Copyright Jinqi Wang 2024.</p>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</footer>
+<!-- Footer Area End -->
+
+<!--Jquery js-->
+<script src="../static/js/jquery-3.0.0.min.js"></script>
+<!--Jquery-ui js-->
+<script src="../static/js/jquery-ui.min.js"></script>
+<!--Bootstrap js-->
+<script src="../static/js/boostrap.bundle.min.js"></script>
+<!--Owl-Carousel js-->
+<script src="../static/js/owl.carousel.min.js"></script>
+<!--SlickNav js-->
+<script src="../static/js/jquery.slicknav.min.js"></script>
+<script src="../static/js/jquery.magnific-popup.min.js"></script>
+<!--Main js-->
+<script src="../static/js/main.js"></script>
+</body>
+</html>

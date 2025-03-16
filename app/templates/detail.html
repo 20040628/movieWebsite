@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon/favicon-32x32.png">
+    <!--Bootstrap css-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!--Font Awesome css-->
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <!--Magnific css-->
+    <link rel="stylesheet" href="../static/css/magnific-popup.css">
+    <!--Owl-Carousel css-->
+    <link rel="stylesheet" href="../static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../static/css/owl.theme.default.min.css">
+    <!--Animate css-->
+    <link rel="stylesheet" href="../static/css/animate.min.css">
+    <!--Slicknav css-->
+    <link rel="stylesheet" href="../static/css/slicknav.min.css">
+    <!--Site Main Style css-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!--Responsive css-->
+    <link rel="stylesheet" href="../static/css/responsive.css">
+</head>
+<body>
+<!-- Header Area Start -->
+<header class="filmoja-header-area">
+    <div class="main-header-area">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-2">
+             <div class="site-logo">
+                <a href="/">
+                <img src="../static/img/logo.png" alt="filmoja" />
+                </a>
+             </div>
+             <!-- Responsive Menu Start -->
+             <div class="filmoja-responsive-menu"></div>
+             <!-- Responsive Menu End -->
+          </div>
+          <div class="col-lg-4">
+          </div>
+          <div class="col-lg-6">
+             <div class="mainmenu">
+                <nav>
+                   <ul id="responsive_navigation">
+                      <li><a href="/">home</a></li>
+                      <li>
+                         <a href="/allMovie">movies</a>
+                      </li>
+                      <li>
+                         <a href="/recommend">Recommend</a>
+                      </li>
+                       {% if session.get('logged_in') %}
+                             <li>
+                                 <a href="#">My</a>
+                                 <ul>
+                                     <li><a href="/account">Account</a></li>
+                                     <li><a href="/mycomment">Comment</a></li>
+                                     <li><a href="/myfavorite">Favorite</a></li>
+                                     <li> <a href="/logout">Log out</a></li>
+
+                                 </ul>
+                              </li>
+                        {% else %}
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                       {% endif %}
+                   </ul>
+                </nav>
+             </div>
+          </div>
+       </div>
+    </div>
+    </div>
+</header>
+<!-- Header Area End -->
+
+<!-- Breadcrumb Area Start -->
+<section class="filmoja-breadcrumb-area section_50">
+    <div class="container">
+        <div class="row">
+           <div class="col-md-12">
+              <div class="movie-details-banner">
+                 <div class="row">
+                    <div class="col-lg-3 col-sm-4">
+                       <div class="details-banner-thumb">
+                          <img src="https://image.tmdb.org/t/p/original{{ movie.poster_path }}" alt="movie poster">
+                       </div>
+                    </div>
+                    <div class="col-lg-9 col-sm-8">
+                       <div class="details-banner-info">
+                          <h3>{{ movie.movie_title }}</h3>
+                            <span class="details-genre">Genre: </span>
+                            {% for genre in movie.genres %}
+                            <span class="details-genre">{{ genre.name }}{% if not loop.last %}, {% endif %}</span>
+                            {% endfor %}
+                          <p class="details-time-left">
+                              <i class="fa fa-clock-o"></i>Runtime: {{ movie.runtime }} min
+                              <i class="fa fa-star"></i>Rating: {{ movie.average_rating }}
+                          </p>
+                           {% if is_favorite == False %}
+                               <button id="favorite-btn" class="filmoja-btn tablet-action" onclick="favorite('{{ movie.id }}','{{ session.get('userid') }}')">
+                                   <i class="fa fa-heart-o"></i> Favorite</button>
+                           {% else %}
+                               <button id="favorite-btn" class="filmoja-btn tablet-action" onclick="removeFavorite('{{ movie.id }}','{{ session.get('userid') }}')">
+                                   <i class="fa fa-heart"></i> Unfavorite</button>
+                           {% endif %}
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Area End -->
+
+<!-- Movie Details Page Start -->
+<section class="filmoja-movie-details-page infor mt-3">
+ <div class="container">
+    <div class="row">
+       <div class="col-lg-9 offset-lg-3">
+          <div class="movie-details-page-box">
+             <ul>
+                 <li><span>Release Date</span> : {{ movie.release_date }}</li>
+                <li><span>Director</span> : {{ movie.director }}</li>
+                <li><span>Star</span> : {{ movie.star1 }}, {{ movie.star2 }}</li>
+                <li><span>Certificate</span> : {{ movie.certificate }}</li>
+                <li><span>Languages</span> : {{ movie.spoken_languages }}</li>
+                 <li><span>tagline</span> : {{ movie.tagline }}</li>
+             </ul>
+            <div class="tab-movies-details">
+                <div class="row">
+                    <h6 class="detail-title">Overview</h6>
+                    <div class="col-md-12">
+                        <div class="tab-body">
+                            <p>{{ movie.overview }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-movies-details">
+                <div class="row">
+                    <h6 class="detail-title">All Comments</h6>
+                    <div class="col-md-12">
+                        <div class="tab-body">
+                            {% if not evaluates %}
+                               <p>The movie hasn't been reviewed yet. Come review it!</p>
+                           {% else %}
+                            <ul class="reviews-box">
+                              {% for evaluate in evaluates %}
+                                <li class="single-reviews">
+                                    <div class="reviews-autor">
+                                       <img class="reviews-avatar" src="../static/img/avatars/{{ evaluate.user.avatar }}" alt="avatar">
+                                       <span class="reviews-title">Username: {{ evaluate.user.username  }}</span>
+                                       <span class="reviews-date">Release time: {{ evaluate.submit_date }}</span>
+                                       <span class="reviews-rating"><i class="fa fa-star"></i> {{ evaluate.rating }}</span>
+                                    </div>
+                                    <p class="reviews-text">{{ evaluate.comment }}</p>
+                                </li>
+                              {% endfor %}
+                            </ul>
+                           {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-movies-details">
+                <div class="row">
+                    <div class="col-md-12">
+                       <div class="reviews">
+                            <h6 class="detail-title">Your Comment</h6>
+                            <form action="#" method="post" class="form" name="detail">
+                            {{ form.hidden_tag() }}
+                             <div class="form-item">
+                                 <span for="{{ form.comment.id }}" class="comment">{{ form.comment.label }}</span>
+                                 <span>(no more than 300 chars): </span>
+                                 <span id="current">0</span>
+                                 <span id="maximum">/ 300</span>
+                                {{ form.comment(class="text-counter", placeholder="Your comment of the film", required=True) }}
+                             </div>
+                             <div class="review_rating form-item">
+                                <p>Rate now:</p>
+                                <input type="radio" id="star5" name="rating" value="10" />
+                                <label class="full" for="star5" title="10 stars" aria-label="10 stars"></label>
+                                <input type="radio" id="star4half" name="rating" value="9" />
+                                <label class="half" for="star4half" title="9 stars" aria-label="9 stars"></label>
+                                <input type="radio" id="star4" name="rating" value="8" />
+                                <label class="full" for="star4" title="8 stars" aria-label="8 stars"></label>
+                                <input type="radio" id="star3half" name="rating" value="7" />
+                                <label class="half" for="star3half" title="7 stars" aria-label="7 stars"></label>
+                                <input type="radio" id="star3" name="rating" value="6" />
+                                <label class="full" for="star3" title="6 stars" aria-label="6 stars"></label>
+                                <input type="radio" id="star2half" name="rating" value="5" />
+                                <label class="half" for="star2half" title="5 stars" aria-label="5 stars"></label>
+                                <input type="radio" id="star2" name="rating" value="4" />
+                                <label class="full" for="star2" title="4 stars" aria-label="4 stars"></label>
+                                <input type="radio" id="star1half" name="rating" value="3" />
+                                <label class="half" for="star1half" title="3 stars" aria-label="3 stars"></label>
+                                <input type="radio" id="star1" name="rating" value="2" />
+                                <label class="full" for="star1" title="2 stars" aria-label="2 stars"></label>
+                                <input type="radio" id="starhalf" name="rating" value="1" />
+                                <label class="half" for="starhalf" title="1 star" aria-label="1 star"></label>
+                                 {% if form.rating.errors %}
+                                    {% for error in form.rating.errors %}
+                                        <p class="text-danger">{{ error }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                             </div>
+                             <div class="form-item">
+                                 <a href="" class="filmoja-btn">Cancel</a>
+                                <button type="submit" class="filmoja-btn">Submit</button>
+                             </div>
+                          </form>
+                       </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</section>
+<!-- Movie Details Page End -->
+
+<!-- Footer Area Start -->
+<footer class="filmoja-footer-area">
+ <div class="footer-top-area section_70">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-6 col-sm-6">
+             <div class="single-footer-widget">
+                <a href="/"><img src="../static/img/footer_logo.png" alt="footer logo" /></a>
+                <p>No.999, Xi'an Road, Pidu District</p>
+                <p>Chengdu, Sichuan</p>
+                <div class="footer-contact">
+                   <p>mail us: 2079815208@qq.com</p>
+                   <p>call me: 15806120101</p>
+                </div>
+             </div>
+          </div>
+          <div class="col-lg-6 col-sm-6">
+             <div class="single-footer-widget">
+                <h3>site map</h3>
+                <ul>
+                   <li><a href="/"><i class="fa fa-angle-double-right"></i>Home</a></li>
+                   <li><a href="/allMovie"><i class="fa fa-angle-double-right"></i>Movies</a></li>
+                   <li><a href="/recommend"><i class="fa fa-angle-double-right"></i>Recommend</a></li>
+                   <li><a href="/account"><i class="fa fa-angle-double-right"></i>My Account</a></li>
+                    <li><a href="/mycomment"><i class="fa fa-angle-double-right"></i>My Comment</a></li>
+                    <li><a href="/myfavorite"><i class="fa fa-angle-double-right"></i>My Favorite</a></li>
+                </ul>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <div class="copyright-area">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-12">
+             <div class="copyright-box">
+                <p>© Copyright Jinqi Wang 2024.</p>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</footer>
+<!-- Footer Area End -->
+
+
+<!--Jquery js-->
+<script src="../static/js/jquery-3.0.0.min.js"></script>
+<!--Jquery-ui js-->
+<script src="../static/js/jquery-ui.min.js"></script>
+<!--Bootstrap js-->
+<script src="../static/js/bootstrap.min.js"></script>
+<!--Owl-Carousel js-->
+<script src="../static/js/owl.carousel.min.js"></script>
+<!--SlickNav js-->
+<script src="../static/js/jquery.slicknav.min.js"></script>
+<!--Magnific js-->
+<script src="../static/js/jquery.magnific-popup.min.js"></script>
+<!--Main js-->
+<script src="../static/js/main.js"></script>
+
+<script src="../static/js/favorite.js"></script>
+</body>
+</html>

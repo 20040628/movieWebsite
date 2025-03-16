@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="../static/img/favicon/favicon-32x32.png">
+    <!--Bootstrap css-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!--Font Awesome css-->
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <!--Magnific css-->
+    <link rel="stylesheet" href="../static/css/magnific-popup.css">
+    <!--Owl-Carousel css-->
+    <link rel="stylesheet" href="../static/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="../static/css/owl.theme.default.min.css">
+    <!--Animate css-->
+    <link rel="stylesheet" href="../static/css/animate.min.css">
+    <!--Slicknav css-->
+    <link rel="stylesheet" href="../static/css/slicknav.min.css">
+    <!--Site Main Style css-->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <!--Responsive css-->
+    <link rel="stylesheet" href="../static/css/responsive.css">
+</head>
+<body>
+<!-- Header Area Start -->
+<header class="filmoja-header-area">
+    <div class="main-header-area">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-2">
+             <div class="site-logo">
+                <a href="/">
+                <img src="../static/img/logo.png" alt="filmoja" />
+                </a>
+             </div>
+             <!-- Responsive Menu Start -->
+             <div class="filmoja-responsive-menu"></div>
+             <!-- Responsive Menu End -->
+          </div>
+          <div class="col-lg-4">
+
+          </div>
+          <div class="col-lg-6">
+             <div class="mainmenu">
+                <nav>
+                   <ul id="responsive_navigation">
+                      <li><a href="/">home</a></li>
+                      <li>
+                         <a href="/allMovie">movies</a>
+                      </li>
+                      <li>
+                         <a href="/recommend">Recommend</a>
+                      </li>
+                       {% if session.get('logged_in') %}
+                             <li class="active">
+                                 <a href="#">My</a>
+                                 <ul>
+                                     <li><a href="/account">Account</a></li>
+                                     <li><a href="/mycomment">Comment</a></li>
+                                     <li><a href="/myfavorite">Favorite</a></li>
+                                     <li> <a href="/logout">Log out</a></li>
+
+                                 </ul>
+                              </li>
+                        {% else %}
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/register">Register</a></li>
+                       {% endif %}
+                   </ul>
+                </nav>
+             </div>
+          </div>
+       </div>
+    </div>
+    </div>
+</header>
+<!-- Header Area End -->
+
+
+<!-- Movie List Area Start -->
+<section class="filmoja-movie-list-area section_50">
+ <div class="container">
+    <div class="row">
+        {% if movie_number == 0 %}
+        <div class="col-lg-12">
+            <div class="browse-option-box margin-top">
+                 <div class="total-item-show">
+                    <p>You do not have movies in your collection!</p>
+                 </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-lg-12">
+            <div class="browse-option-box">
+                 <div class="total-item-show">
+                    <p>Your favorites: There are {{ movie_number }} movies</p>
+                 </div>
+            </div>
+            {% for movie in movie_list.items %}
+            <div class="single-movie-list">
+                <div class="single-movie-list-left">
+                   <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" alt="top movie">
+                </div>
+                <div class="single-movie-list-right">
+                   <h3><a href="{{ url_for('detail', movie_id=movie.id) }}">{{ movie.movie_title }}</a></h3>
+                   <ul>
+                      <li class="rating"><i class="fa fa-star"></i>Score: {{ movie.average_rating }}</li>
+                       <li class="black-text mt-2">Certificate: {{ movie.certificate }}</li>
+                   </ul>
+                   <div class="movie-list-info">
+                       <p>Runtime: <span>{{ movie.runtime }} minutes</span></p>
+                      <p>Director: <span>{{ movie.director }}</span></p>
+                      <p>Release: <span>{{ movie.release_date }}</span></p>
+                   </div>
+                    <div class="top-action">
+                        <a href="/myfavorite" onclick="removeFavorite('{{ movie.id }}','{{ session.get('userid') }}')"><i class="fa fa-heart"></i> Unfavorite</a>
+                        <a href="{{ url_for('detail', movie_id=movie.id) }}">Learn More<i class="fa fa-angle-double-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Pagination Start -->
+            <div class="pagination-box-row responsive-pag margin-top">
+             <ul class="pagination">
+                 {% for page in range(1, movie_list.pages + 1) %}
+                    <li class="page-item {% if page == movie_list.page %}active{% endif %}">
+                        <a href="{{ url_for('myfavorite', page=page) }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+             </ul>
+            </div>
+            <!-- Pagination End -->
+        </div>
+        {% endif %}
+    </div>
+ </div>
+</section>
+<!-- Movie List Area End -->
+
+<!-- Footer Area Start -->
+<footer class="filmoja-footer-area">
+ <div class="footer-top-area section_70">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-6 col-sm-6">
+             <div class="single-footer-widget">
+                <a href="/"><img src="../static/img/footer_logo.png" alt="footer logo" /></a>
+                <p>No.999, Xi'an Road, Pidu District</p>
+                <p>Chengdu, Sichuan</p>
+                <div class="footer-contact">
+                   <p>mail us: 2079815208@qq.com</p>
+                   <p>call me: 15806120101</p>
+                </div>
+             </div>
+          </div>
+          <div class="col-lg-6 col-sm-6">
+             <div class="single-footer-widget">
+                <h3>site map</h3>
+                <ul>
+                   <li><a href="/"><i class="fa fa-angle-double-right"></i>Home</a></li>
+                   <li><a href="/allMovie"><i class="fa fa-angle-double-right"></i>Movies</a></li>
+                   <li><a href="/recommend"><i class="fa fa-angle-double-right"></i>Recommend</a></li>
+                   <li><a href="/account"><i class="fa fa-angle-double-right"></i>My Account</a></li>
+                    <li><a href="/mycomment"><i class="fa fa-angle-double-right"></i>My Comment</a></li>
+                    <li><a href="/myfavorite"><i class="fa fa-angle-double-right"></i>My Favorite</a></li>
+                </ul>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <div class="copyright-area">
+    <div class="container">
+       <div class="row">
+          <div class="col-lg-12">
+             <div class="copyright-box">
+                <p>© Copyright Jinqi Wang 2024.</p>
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+</footer>
+<!-- Footer Area End -->
+
+
+<!--Jquery js-->
+<script src="../static/js/jquery-3.0.0.min.js"></script>
+<!--Jquery-ui js-->
+<script src="../static/js/jquery-ui.min.js"></script>
+<!--Bootstrap js-->
+<script src="../static/js/bootstrap.min.js"></script>
+<!--Owl-Carousel js-->
+<script src="../static/js/owl.carousel.min.js"></script>
+<!--SlickNav js-->
+<script src="../static/js/jquery.slicknav.min.js"></script>
+<!--Magnific js-->
+<script src="../static/js/jquery.magnific-popup.min.js"></script>
+<!--Main js-->
+<script src="../static/js/main.js"></script>
+
+<script src="../static/js/favorite.js"></script>
+</body>
+</html>

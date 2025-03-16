@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title -->
+    <title>{{ title }}</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!-- Main css -->
+    <link rel="stylesheet" href="../static/css2/main.css">
+     <!-- icon Css -->
+    <link rel="stylesheet" href="../static/phosphor-icons/Fonts/regular/style.css">
+    <link rel="icon" href="../static/img/favicon/favicon-32x32.png" type="image/x-icon">
+</head>
+<body>
+<!--==================== Sidebar Overlay start ====================-->
+<div class="side-overlay"></div>
+<!--==================== Sidebar Overlay End ====================-->
+
+<!-- ============================ Sidebar Start ============================ -->
+<aside class="sidebar">
+    <!-- logo start -->
+    <div class="sidebar__logo text-center p-20 position-sticky inset-block-start-0 bg-white w-100 z-1 pb-10">
+        <img src="../static/img/logo.png" alt="the logo of this website">
+    </div>
+    <!-- logo end -->
+
+    <div class="sidebar-menu-wrapper overflow-y-auto scroll-sm">
+        <div class="p-10 pt-10">
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu__item">
+                    <li class="sidebar-menu__item">
+                    <a href="/manageMovie" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-clipboard-text"></i></span>
+                        <span class="text">Movie</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/createMovie" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-bookmarks"></i></span>
+                        <span class="text">Create Movie</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/manageGenre" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-bullets"></i></span>
+                        <span class="text">Genre</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/create_genre" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-plus"></i></span>
+                        <span class="text">Create Genre</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/manageUser" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-user-list"></i></span>
+                        <span class="text">User</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item activePage">
+                    <a href="/manage_comment" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-file-text"></i></span>
+                        <span class="text">Comment</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/userLog" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-user"></i></span>
+                        <span class="text">Log</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/logout" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-sign-out"></i></span>
+                        <span class="text">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</aside>
+<!-- ============================ Sidebar End  ============================ -->
+
+<div class="dashboard-main-wrapper">
+    <!-- Navigation bar under small screen start -->
+    <div class="top-navbar flex-between gap-16 d-xl-none">
+        <div class="flex-align gap-16">
+            <!-- Toggle Button Start -->
+            <span type="button" class="toggle-btn d-xl-none d-flex text-26 text-gray-500"><i class="ph ph-list"></i></span>
+            <!-- Toggle Button End -->
+        </div>
+    </div>
+    <!-- Navigation bar under small screen end -->
+
+    <div class="dashboard-body">
+        <div class="card-body p-0 overflow-x-auto scroll-sm scroll-sm-horizontal">
+            <!-- Table Start -->
+            <div class="card mt-12 overflow-hidden">
+                <div class="card-header">
+                    <div class="mb-0 flex-between flex-wrap gap-8">
+                        <h1 class="h3 mb-0">Comment Management</h1>
+                    </div>
+                </div>
+                <div class="card-body p-0 overflow-x-auto scroll-sm scroll-sm-horizontal">
+                    {% if not comment_list.items %}
+                    <table class="table style-three mb-0">
+                    {% else %}
+                    <table class="table style-three mb-0">
+                    {% endif %}
+                        <thead>
+                        <tr>
+                            <th class="text-center text-18">Id</th>
+                            <th class="text-center text-18">User Id</th>
+                            <th class="text-center text-18">Movie Id</th>
+                            <th class="text-center text-18">Rating</th>
+                            <th class="text-center text-18">Comment</th>
+                            <th class="text-center text-18">Submit Time</th>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if not comment_list.items %}
+                            <tr>
+                                <td colspan="6" class="text-center">There is no comment</td>
+                            </tr>
+                        {% else %}
+                            {% for comment in comment_list.items %}
+                            <tr>
+                                <td>
+                                   <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ comment.id }}</p>
+                                   </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ comment.user_id }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ comment.movie_id }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                   <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ comment.rating }}</p>
+                                   </div>
+                                </td>
+                                <td class="width-450">
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0" >{{ comment.comment }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ comment.submit_date }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align justify-content-center gap-8">
+                                        <button class="btn bg-danger-700 rounded-pill py-7"
+                                        onclick="deleteComment('{{ comment.id }}')">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Start -->
+                {% if comment_list.items %}
+                <div class="card-footer flex-between flex-wrap">
+                    <ul class="pagination flex-align flex-wrap">
+                    {% for page in range(1, comment_list.pages + 1) %}
+                        <li class="page-item {% if page == comment_list.page %}active{% endif %}">
+                            <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium text-info-700" href="{{ url_for('manage_comment', page=page) }}">{{ page }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                <!-- Pagination End -->
+            </div>
+            <!-- Table End -->
+        </div>
+    </div>
+
+    <div class="dashboard-footer">
+    <div class="flex-between flex-wrap gap-16">
+        <p class="text-gray-300 text-13 fw-normal"> &copy; Copyright Jinqi Wang 2024.</p>
+    </div>
+</div>
+</div>
+
+<script src="../static/js2/jquery-3.7.1.min.js"></script>
+<!-- dataTables -->
+<script src="../static/js2/datatables.js"></script>
+<script src="../static/js2/main.js"></script>
+<script src="../static/js2/update.js"></script>
+</body>
+</html>

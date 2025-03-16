@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title -->
+    <title>{{ title }}</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <!-- Main css -->
+    <link rel="stylesheet" href="../static/css2/main.css">
+     <!-- icon Css -->
+    <link rel="stylesheet" href="../static/phosphor-icons/Fonts/regular/style.css">
+    <link rel="icon" href="../static/img/favicon/favicon-32x32.png" type="image/x-icon">
+</head>
+<body>
+<!--==================== Sidebar Overlay start ====================-->
+<div class="side-overlay"></div>
+<!--==================== Sidebar Overlay End ====================-->
+
+<!-- ============================ Sidebar Start ============================ -->
+<aside class="sidebar">
+    <!-- logo start -->
+    <div class="sidebar__logo text-center p-20 position-sticky inset-block-start-0 bg-white w-100 z-1 pb-10">
+        <img src="../static/img/logo.png" alt="the logo of this website">
+    </div>
+    <!-- logo end -->
+
+    <div class="sidebar-menu-wrapper overflow-y-auto scroll-sm">
+        <div class="p-10 pt-10">
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu__item activePage">
+                    <a href="/manageMovie" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-clipboard-text"></i></span>
+                        <span class="text">Movie</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/createMovie" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-bookmarks"></i></span>
+                        <span class="text">Create Movie</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/manageGenre" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-bullets"></i></span>
+                        <span class="text">Genre</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/create_genre" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-list-plus"></i></span>
+                        <span class="text">Create Genre</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/manageUser" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-user-list"></i></span>
+                        <span class="text">User</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/manage_comment" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-file-text"></i></span>
+                        <span class="text">Comment</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/userLog" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-user"></i></span>
+                        <span class="text">Log</span>
+                    </a>
+                </li>
+                <li class="sidebar-menu__item">
+                    <a href="/logout" class="sidebar-menu__link">
+                        <span class="icon"><i class="ph ph-sign-out"></i></span>
+                        <span class="text">Log out</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</aside>
+<!-- ============================ Sidebar End  ============================ -->
+
+<div class="dashboard-main-wrapper">
+    <!-- Navigation bar under small screen start -->
+    <div class="top-navbar flex-between gap-16 d-xl-none">
+        <div class="flex-align gap-16">
+            <!-- Toggle Button Start -->
+            <span type="button" class="toggle-btn d-xl-none d-flex text-26 text-gray-500"><i class="ph ph-list"></i></span>
+            <!-- Toggle Button End -->
+        </div>
+    </div>
+    <!-- Navigation bar under small screen end -->
+
+    <div class="dashboard-body">
+        <div class="card-body p-0 overflow-x-auto scroll-sm scroll-sm-horizontal">
+            <!-- Table Start -->
+            <div class="card mt-12 overflow-hidden">
+                <div class="card-header">
+                    <div class="mb-0 flex-between flex-wrap gap-8">
+                        <h1 class="h3 mb-0">Movie Management</h1>
+                    </div>
+                </div>
+                <div class="mx-4 row">
+                    <p class="mb-3 col-4 col-sm-6 col-lg-8">Found {{ movie_number }} movies</p>
+                    <form action="/manageMovie" method="get" onsubmit="event.preventDefault(); filterMovies();" class="col-8 col-sm-6 col-lg-4">
+                        <input id="search-input" type="text" name="search" value="{{ search }}" placeholder="Search by movie title..." aria-label="Search by movie title...">
+                        <button type="submit" class="btn bg-success rounded-pill py-7">Search</button>
+                    </form>
+                    <div class="col-6 col-lg-8">
+                        <span>Sort by Genre:</span>
+                        <select id="genre-select" onchange="filterMovies()">
+                            <option value="0" {% if genre_id == "0" %}selected{% endif %}>ALL</option>
+                            {% for genre in genre_list %}
+                           <option value="{{ genre.id }}" {% if genre.id|string == genre_id %}selected{% endif %}>{{ genre.name }}</option>
+                            {% endfor %}
+                        </select>
+                     </div>
+                    <div class="col-6 col-lg-4">
+                        <span>Sort by Score:</span>
+                        <select id="score-select" onchange="filterMovies()">
+                            <option value="Null">Random</option>
+                            <option value="Ascend" {% if sort_order == 'Ascend' %}selected{% endif %}>Ascend</option>
+                            <option value="Descend" {% if sort_order == 'Descend' %}selected{% endif %}>Descend</option>
+                        </select>
+                     </div>
+                </div>
+                <div class="card-body p-0 overflow-x-auto scroll-sm scroll-sm-horizontal">
+                    {% if not movie_list.items %}
+                    <table class="table style-three mb-0">
+                    {% else %}
+                    <table class="table style-three mb-0" id="movieTable">
+                    {% endif %}
+                        <thead>
+                        <tr>
+                            <th class="text-center text-18">Id</th>
+                            <th class="text-center text-18">Title</th>
+                            <th class="text-center text-18">Release Date</th>
+                            <th class="text-center text-18">Background</th>
+                            <th class="text-center text-18">Poster</th>
+                            <th class="text-center text-18">Runtime</th>
+                            <th class="text-center text-18">Language</th>
+                            <th class="text-center text-18">Certificate</th>
+                            <th class="text-center text-18">Director</th>
+                            <th class="text-center text-18">Star1</th>
+                            <th class="text-center text-18">Star2</th>
+                            <th class="text-center text-18">Rating</th>
+                            <th class="text-center text-18">Genre</th>
+                            <th class="text-center text-18">Tagline</th>
+                            <th class="text-center text-18">Overview</th>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% if not movie_list.items %}
+                            <tr>
+                                <td colspan="13" class="text-center">There is no movie</td>
+                            </tr>
+                        {% else %}
+                            {% for movie in movie_list.items %}
+                            <tr>
+                                <td>
+                                   <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.id }}</p>
+                                   </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.movie_title }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.release_date }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center manageback">
+                                        <img src="https://image.tmdb.org/t/p/w200{{ movie.backdrop_path }}" alt="background image">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center manageposter">
+                                        <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" alt="poster">
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.runtime }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.spoken_languages }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.certificate }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.director }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.star1 }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.star2 }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <p class="mb-0">{{ movie.average_rating }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        {% for genre in movie.genres %}
+                                        <span>{{ genre.name }}{% if not loop.last %}, {% endif %}</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td class="width-450">
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <span>{{ movie.tagline }}</span>
+                                    </div>
+                                </td>
+                                <td class="width-450">
+                                    <div class="flex-align gap-8 justify-content-center">
+                                        <span>{{ movie.overview }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="flex-align justify-content-center gap-8">
+                                        <a href="{{ url_for('edit', movie_id=movie.id) }}"
+                                            class="btn btn-main rounded-pill py-7">Edit</a>
+                                        <button class="btn bg-danger-700 rounded-pill py-7"
+                                        onclick="deleteMovie('{{ movie.id }}')">Delete</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination Start -->
+                {% if movie_list.items %}
+                <div class="card-footer flex-between flex-wrap">
+                    <ul class="pagination flex-align flex-wrap">
+                    {% for page in range(1, movie_list.pages + 1) %}
+                        <li class="page-item {% if page == movie_list.page %}active{% endif %}">
+                            <a class="page-link h-44 w-44 flex-center text-15 rounded-8 fw-medium text-info-700" href="{{ url_for('manageMovie', page=page, search=request.args.get('search'), genre_id=request.args.get('genre_id'), sort_order=request.args.get('sort_order')) }}">{{ page }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                <!-- Pagination End -->
+            </div>
+            <!-- Table End -->
+        </div>
+    </div>
+
+    <div class="dashboard-footer">
+    <div class="flex-between flex-wrap gap-16">
+        <p class="text-gray-300 text-13 fw-normal"> &copy; Copyright Jinqi Wang 2024.</p>
+    </div>
+</div>
+</div>
+
+
+<!-- Jquery js -->
+<script src="../static/js2/jquery-3.7.1.min.js"></script>
+<!-- dataTables -->
+<script src="../static/js2/datatables.js"></script>
+<script src="../static/js2/main.js"></script>
+<script src="../static/js2/update.js"></script>
+<script src="../static/js2/filter.js"></script>
+</body>
+</html>
